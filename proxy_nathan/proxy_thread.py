@@ -1,3 +1,7 @@
+BACKLOG = 50            # how many pending connections queue will hold
+MAX_DATA_RECV = 4096    # max number of bytes we receive at once
+DEBUG = False  
+
 def proxy_thread(conn, client_addr):
 
 	#get the request from the browser
