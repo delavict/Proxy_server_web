@@ -34,3 +34,15 @@ def main():
         print "Could not open socket : " message
         sys.exit(1)
 
+    #get the connection from client
+    while 1:
+        conn, client_addr = s.accept()
+
+        # create a thread to handle request for the proxy server
+        thread.start_new_thread(proxy_thread,(conn,client_addr))
+
+    s.close()
+
+if __name__ == '__main__' : 
+    main()
+
