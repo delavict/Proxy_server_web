@@ -14,3 +14,23 @@ def main():
         return sys.stdout
  
    
+    #host and port info : 
+    host = ''       # blank for localhost
+    port = int(sys.argv[1]) # port from argument
+
+    try:
+        #create a socket 
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        #association of the socket with the host and the port
+        s.bind(host,port);
+
+        #listening to the socket
+        s.listen(BACKLOG);
+
+    except socket.error,(value,message):
+        if s:
+            s.close()
+        print "Could not open socket : " message
+        sys.exit(1)
+
