@@ -78,9 +78,16 @@ def proxy_thread(client, address):
 						host = path
 						port = 80  # default port value
 					break
-			# we print the connection data
-			print 'Connecting to', host, 'on port', port
-			print 'The request is : ', request
+			#we check if the site we want to access is not blocked
+			if not check_url(host):
+				print 'The site you asked is blocked'
+				# this would be cool here to send a massage page to 
+				#the web browser
+			else:
+				# we print the connection data
+				print 'Connecting to', host, 'on port', port
+				print 'The request is : ', request
+
 			try:
 				#this is the socket to handle upstream connection
 				proxy_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -125,43 +132,40 @@ def console():
 	print '======= welcome to the console ======= '
 	print
 	print 'add [url]: 		to add an url to block with the proxy'
-	print 'display : 	to display all the url to block'
-	print 'remove [str] : to remove every url of the list containing the stirng str'
-	print 'remall		to remove all the url of the list'
+	print 'display : 	to display all the site to block'
+	print 'remove [str] : to remove every site of the list containing the stirng str'
+	print 'remall		to remove all the site of the list'
 	print  'exit:		to exit of the console'
 
 	end = false;
 	# we open the file which store the url to block with the proxy
-	block_file = open ('blocked_url.txt','w')
+	block_file = open ('blocked_site.txt','w')
 
-	while not end 
+	while not end :
 		command_input = input("Enter the command")
 		command = commnand.split()
 	
 		if command[0] in ['Add','add','ADD']:
 			if len(command) == 2:
-				url_to_add = command[1]
-				if url_to_add.startswith( 'http://' :
-					block_file.write(url_to_add,'\n')
-					print url_to_add,' as been added to the list of blocked url'
-				else:
-					print 'Error : Url not valid, nothing was added'
-			else
+				site_to_add = command[1]
+				block_file.write(url_to_add,'\n')
+				print site_to_add,' as been added to the list of blocked site'
+			else:
 				print 'Error : the add command needs an arguement '
 
 		elif command[0] in ['Display','display','DISPLAY']:
-			for line in block_file
+			for line in block_file:
 				print line
 		elif command[0] in ['remove','Remove','REMOVE']:
 			if len(command) == 2:
-				url_to_rem = command[1]
+				site_to_rem = command[1]
 				for line in fileinput.input(filename, inplace=True):
-    				if url_to_rem in line:
+    				if site_to_rem in line:
         				continue
     				print(line, end='')
     	elif command[0] in ['remall','Remall','REMALL']:
     		delete(block_file)
-    		print 'The list of url to be blocked has been emptyed.'
+    		print 'The list of site to be blocked has been emptyed.'
     	elif command[0] in ['exit','Exit','EXIT']:
     		end = True
     	else:
@@ -178,6 +182,16 @@ def console():
 def deleteContent(pfile):
     pfile.seek(0)
     pfile.truncate()
+
+##
+# this function check if the url is not blocked
+# return boolean
+def check_url(url):
+	block_file = open ('blocked_url.txt','r')
+	for line in block_file
+		if line == url:
+			return False
+	return True
 
 
 
