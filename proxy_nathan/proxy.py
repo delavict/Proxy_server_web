@@ -10,6 +10,7 @@
 import socket
 import thread
 import sys
+import fileinput
 
 
 MAX_QUEUE  = 5      
@@ -20,7 +21,10 @@ TIMEOUT = 4
 HOST = ''
 
 def main():
-	start_proxy()
+	if len(sys.argv) > 1 and sys.argv[1] in ['-c','-con','-console']:
+		console()
+	else:
+		start_proxy()
 	return 0
 
 def start_proxy():
@@ -115,6 +119,65 @@ def proxy_thread(client, address):
 		pass
 	client.close()
 	return
+
+def console():
+	print
+	print '======= welcome to the console ======= '
+	print
+	print 'add [url]: 		to add an url to block with the proxy'
+	print 'display : 	to display all the url to block'
+	print 'remove [str] : to remove every url of the list containing the stirng str'
+	print 'remall		to remove all the url of the list'
+	print  'exit:		to exit of the console'
+
+	end = false;
+	# we open the file which store the url to block with the proxy
+	block_file = open ('blocked_url.txt','w')
+
+	while not end 
+		command_input = input("Enter the command")
+		command = commnand.split()
+	
+		if command[0] in ['Add','add','ADD']:
+			if len(command) == 2:
+				url_to_add = command[1]
+				if url_to_add.startswith( 'http://' :
+					block_file.write(url_to_add,'\n')
+					print url_to_add,' as been added to the list of blocked url'
+				else:
+					print 'Error : Url not valid, nothing was added'
+			else
+				print 'Error : the add command needs an arguement '
+
+		elif command[0] in ['Display','display','DISPLAY']:
+			for line in block_file
+				print line
+		elif command[0] in ['remove','Remove','REMOVE']:
+			if len(command) == 2:
+				url_to_rem = command[1]
+				for line in fileinput.input(filename, inplace=True):
+    				if url_to_rem in line:
+        				continue
+    				print(line, end='')
+    	elif command[0] in ['remall','Remall','REMALL']:
+    		delete(block_file)
+    		print 'The list of url to be blocked has been emptyed.'
+    	elif command[0] in ['exit','Exit','EXIT']:
+    		end = True
+    	else:
+    		print 'Error : Invalid command entered'
+
+    print "Exiting of the console, do you want to run the proxy server now ?"
+    answer = input('[Y]es or [N]o')
+    if answer in ['Y','y','yes','YES','Yes']:
+    	start_proxy()
+    else:
+    	print 'Bye'
+
+
+def deleteContent(pfile):
+    pfile.seek(0)
+    pfile.truncate()
 
 
 
